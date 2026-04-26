@@ -7,7 +7,42 @@
 
 <h1>Unified IT Dashboard</h1>
 
-<h2>Welcome! Your project is working 🎉</h2>
+<h2>📊 Stats</h2>
+<div id="stats"></div>
+
+<h2>🖥️ Monitoring</h2>
+<div id="monitoring"></div>
+
+<h2>🌡️ Environment</h2>
+<div id="iot"></div>
+
+<script>
+function loadData() {
+    fetch('/dashboard/stats')
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('stats').innerText =
+            `Assets: ${data.assets}, Open Tickets: ${data.tickets_open}, Closed Tickets: ${data.tickets_closed}`;
+    });
+
+    fetch('/dashboard/monitoring')
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('monitoring').innerText =
+            `CPU: ${data.cpu}%, RAM: ${data.ram}%, Disk: ${data.disk}%`;
+    });
+
+    fetch('/dashboard/iot')
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('iot').innerText =
+            `Temp: ${data.temperature}°C, Humidity: ${data.humidity}%`;
+    });
+}
+
+loadData();
+setInterval(loadData, 5000); // refresh every 5 sec
+</script>
 
 </body>
 </html>
