@@ -16,6 +16,14 @@
 <h2>🌡️ Environment</h2>
 <div id="iot"></div>
 
+<h2>🖥️ Asset Management</h2>
+
+<input type="text" id="assetName" placeholder="assetName">
+<input type="text" id="assetType" placeholder="Asset assetType">
+<button onclick="addAsset()">Add Asset</button>
+
+<ul id="assetList"></ul>
+
 <script>
 function loadData() {
     fetch('/dashboard/stats')
@@ -42,6 +50,42 @@ function loadData() {
 
 loadData();
 setInterval(loadData, 5000); // refresh every 5 sec
+</script>
+
+<script>
+function loadAssets() {
+    fetch('/assets')
+    .then(res => res.json())
+    .then(data => {
+        let list = document.getElementById('assetList');
+        list.innerHTML = "";
+
+        data.forEach(asset => {
+            let li = document.createElement('li');
+            li.innerText = `${asset.name} (${asset.type}) - ${asset.status}`;
+            list.appendChild(li);
+        });
+    });
+}
+
+function addAsset() {
+    let name = document.getElementById('assetName').value;
+    let type = document.getElementById('assetType').value;
+
+    fetch('/assets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, type: type })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+        loadAssets();
+    })
+    .catch(err => console.error("Error:", err));
+}
+
+loadAssets();
 </script>
 
 </body>
