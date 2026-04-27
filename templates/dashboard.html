@@ -24,6 +24,14 @@
 
 <ul id="assetList"></ul>
 
+<h2>🎫 Ticket System</h2>
+
+<input type="text" id="ticketTitle" placeholder="Ticket Title">
+<input type="text" id="ticketPriority" placeholder="Priority (High/Medium/Low)">
+<button onclick="addTicket()">Create Ticket</button>
+
+<ul id="ticketList"></ul>
+
 <script>
 function loadData() {
     fetch('/dashboard/stats')
@@ -86,6 +94,55 @@ function addAsset() {
 }
 
 loadAssets();
+</script>
+
+<script>
+function loadTickets() {
+    fetch('/tickets')
+    .then(res => res.json())
+    .then(data => {
+        let list = document.getElementById('ticketList');
+        list.innerHTML = "";
+
+        data.forEach(ticket => {
+            let li = document.createElement('li');
+
+            li.innerHTML = `
+                ${ticket.title} (${ticket.priority}) - ${ticket.status}
+                <button onclick="closeTicket(${ticket.id})">Close</button>
+            `;
+
+            list.appendChild(li);
+        });
+    });
+}
+
+function addTicket() {
+    let title = document.getElementById('ticketTitle').value;
+    let priority = document.getElementById('ticketPriority').value;
+
+    fetch('/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title, priority: priority })
+    })
+    .then(res => res.json())
+    .then(() => {
+        loadTickets();
+    });
+}
+
+function closeTicket(id) {
+    fetch(`/tickets/${id}`, {
+        method: 'PUT'
+    })
+    .then(() => {
+        loadTickets();
+    });
+}
+
+// Load on page start
+loadTickets();
 </script>
 
 </body>

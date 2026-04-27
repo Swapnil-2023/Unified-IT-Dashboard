@@ -4,11 +4,13 @@ from config import Config
 from models import db
 from routes.dashboard import dashboard_bp
 from routes.asset import asset_bp
+from routes.ticket import ticket_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(asset_bp)
+app.register_blueprint(ticket_bp)
 
 db.init_app(app)
 
