@@ -32,6 +32,15 @@
 
 <ul id="ticketList"></ul>
 
+<h2>🏢 Vendor Management</h2>
+
+<input type="text" id="vendorName" placeholder="Vendor Name">
+<input type="text" id="vendorContact" placeholder="Contact">
+<input type="text" id="vendorEmail" placeholder="Email">
+<button onclick="addVendor()">Add Vendor</button>
+
+<ul id="vendorList"></ul>
+
 <script>
 function loadData() {
     fetch('/dashboard/stats')
@@ -143,6 +152,38 @@ function closeTicket(id) {
 
 // Load on page start
 loadTickets();
+</script>
+
+<script>
+function loadVendors() {
+    fetch('/vendors')
+    .then(res => res.json())
+    .then(data => {
+        let list = document.getElementById('vendorList');
+        list.innerHTML = "";
+
+        data.forEach(v => {
+            let li = document.createElement('li');
+            li.innerText = `${v.name} (${v.contact}) - ${v.email}`;
+            list.appendChild(li);
+        });
+    });
+}
+
+function addVendor() {
+    let name = document.getElementById('vendorName').value;
+    let contact = document.getElementById('vendorContact').value;
+    let email = document.getElementById('vendorEmail').value;
+
+    fetch('/vendors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, contact, email })
+    })
+    .then(() => loadVendors());
+}
+
+loadVendors();
 </script>
 
 </body>
