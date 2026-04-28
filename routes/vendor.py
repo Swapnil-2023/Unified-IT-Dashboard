@@ -30,3 +30,15 @@ def add_vendor():
     db.session.commit()
 
     return jsonify({"message": "Vendor added"})
+
+@vendor_bp.route('/vendors/<int:id>', methods=['DELETE'])
+def delete_vendor(id):
+    vendor = Vendor.query.get(id)
+
+    if not vendor:
+        return jsonify({"error": "Vendor not found"}), 404
+
+    db.session.delete(vendor)
+    db.session.commit()
+
+    return jsonify({"message": "Vendor deleted"})

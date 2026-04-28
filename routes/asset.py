@@ -32,3 +32,13 @@ def add_asset():
     db.session.commit()
 
     return jsonify({"message": "Asset added successfully"})
+
+# Delete asset
+@asset_bp.route('/assets/<int:id>', methods=['DELETE'])
+def delete_asset(id):
+    asset = Asset.query.get(id)
+
+    db.session.delete(asset)
+    db.session.commit()
+
+    return jsonify({"message": "Asset deleted"})

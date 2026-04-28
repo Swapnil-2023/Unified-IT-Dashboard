@@ -39,7 +39,28 @@ def add_ticket():
 def update_ticket(id):
     ticket = Ticket.query.get(id)
 
-    ticket.status = "Closed"
+    if not ticket:
+        return jsonify({"error": "Not found"}), 404
+
+    # 🔄 Toggle status
+    if ticket.status == "Open":
+        ticket.status = "Closed"
+    else:
+        ticket.status = "Open"
+
     db.session.commit()
 
-    return jsonify({"message": "Ticket closed"})
+    return jsonify({"message": "Status updated"})
+
+# DELETE ticket
+@ticket_bp.route('/tickets/<int:id>', methods=['DELETE'])
+def delete_ticket(id):
+    ticket = Ticket.query.get(id)
+
+    if not ticket:
+        return jsonify({"error": "Ticket not found"}), 404
+
+    db.session.delete(ticket)
+    db.session.commit()
+
+    return jsonify({"message": "Ticket deleted"})

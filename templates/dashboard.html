@@ -94,6 +94,8 @@ function loadAssets() {
             let li = document.createElement('li');
             li.innerText = `${asset.name} (${asset.type}) - ${asset.status}`;
             list.appendChild(li);
+            li.innerHTML = `${asset.name} (${asset.type}) - ${asset.status}
+            <button onclick="deleteAsset(${asset.id})">Delete</button>`;
         });
     });
 }
@@ -115,6 +117,13 @@ function addAsset() {
     .catch(err => console.error("Error:", err));
 }
 
+function deleteAsset(id) {
+    fetch(`/assets/${id}`, {
+        method: 'DELETE'
+    })
+    .then(() => loadAssets());
+}
+
 loadAssets();
 </script>
 
@@ -127,15 +136,24 @@ function loadTickets() {
         list.innerHTML = "";
 
         data.forEach(ticket => {
-            let li = document.createElement('li');
+    let li = document.createElement('li');
 
-            li.innerHTML = `
-                ${ticket.title} (${ticket.priority}) - ${ticket.status}
-                <button onclick="closeTicket(${ticket.id})">Close</button>
-            `;
+    let actionButton = "";
 
-            list.appendChild(li);
-        });
+    if (ticket.status === "Open") {
+        actionButton = `<button onclick="toggleTicket(${ticket.id})">Close</button>`;
+    } else {
+        actionButton = `<button onclick="toggleTicket(${ticket.id})">Open</button>`;
+    }
+
+    li.innerHTML = `
+        ${ticket.title} (${ticket.priority}) - ${ticket.status}
+        ${actionButton}
+        <button onclick="deleteTicket(${ticket.id})">Delete</button>
+    `;
+
+    list.appendChild(li);
+});
     });
 }
 
@@ -154,12 +172,23 @@ function addTicket() {
     });
 }
 
-function closeTicket(id) {
+function toggleTicket(id) {
     fetch(`/tickets/${id}`, {
         method: 'PUT'
     })
     .then(() => {
         loadTickets();
+        loadData();
+    });
+}
+
+function deleteTicket(id) {
+    fetch(`/tickets/${id}`, {
+        method: 'DELETE'
+    })
+    .then(() => {
+        loadTickets();
+        loadData(); // update dashboard stats
     });
 }
 
@@ -179,6 +208,8 @@ function loadVendors() {
             let li = document.createElement('li');
             li.innerText = `${v.name} (${v.contact}) - ${v.email}`;
             list.appendChild(li);
+            li.innerHTML = `${v.name} (${v.contact}) - ${v.email}
+            <button onclick="deleteVendor(${v.id})">Delete</button>`;
         });
     });
 }
@@ -193,6 +224,11 @@ function addVendor() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, contact, email })
     })
+    .then(() => loadVendors());
+}
+
+function deleteVendor(id) {
+    fetch(`/vendors/${id}`, { method: 'DELETE' })
     .then(() => loadVendors());
 }
 
@@ -226,8 +262,16 @@ function loadDocuments() {
             let li = document.createElement('li');
             li.innerText = `${doc.name} (${doc.type})`;
             list.appendChild(li);
+            li.innerHTML = `${doc.name} (${doc.type})
+            <button onclick="deleteDocument(${doc.id})">Delete</button>`;
         });
     });
+}
+
+function deleteDocument(id) {
+    console.log("Deleting ID:", id); // DEBUG
+    fetch(`/documents/${id}`, { method: 'DELETE' })
+    .then(() => loadDocuments());
 }
 
 loadDocuments();
