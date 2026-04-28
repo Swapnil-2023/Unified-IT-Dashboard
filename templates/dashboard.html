@@ -41,6 +41,19 @@
 
 <ul id="vendorList"></ul>
 
+<h2>📁 Document Upload</h2>
+
+<input type="file" id="fileInput">
+<select id="fileType">
+    <option value="Invoice">Invoice</option>
+    <option value="PO">PO</option>
+    <option value="Quotation">Quotation</option>
+</select>
+
+<button onclick="uploadFile()">Upload</button>
+
+<ul id="docList"></ul>
+
 <script>
 function loadData() {
     fetch('/dashboard/stats')
@@ -184,6 +197,40 @@ function addVendor() {
 }
 
 loadVendors();
+</script>
+
+<script>
+function uploadFile() {
+    let file = document.getElementById('fileInput').files[0];
+    let type = document.getElementById('fileType').value;
+
+    let formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(() => loadDocuments());
+}
+
+function loadDocuments() {
+    fetch('/documents')
+    .then(res => res.json())
+    .then(data => {
+        let list = document.getElementById('docList');
+        list.innerHTML = "";
+
+        data.forEach(doc => {
+            let li = document.createElement('li');
+            li.innerText = `${doc.name} (${doc.type})`;
+            list.appendChild(li);
+        });
+    });
+}
+
+loadDocuments();
 </script>
 
 </body>
