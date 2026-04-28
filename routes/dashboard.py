@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify
 from models.asset import Asset
 from models.ticket import Ticket
+from models.user import User
 from services.monitoring_service import get_system_stats
 from services.iot_service import get_environment_data
 
@@ -11,7 +12,8 @@ def stats():
     return jsonify({
         "assets": Asset.query.count(),
         "tickets_open": Ticket.query.filter_by(status="Open").count(),
-        "tickets_closed": Ticket.query.filter_by(status="Closed").count()
+        "tickets_closed": Ticket.query.filter_by(status="Closed").count(),
+        "users": User.query.count()
     })
 
 @dashboard_bp.route('/dashboard/monitoring')

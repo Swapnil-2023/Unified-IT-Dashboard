@@ -5,3 +5,5 @@ class Document(db.Model):
     file_name = db.Column(db.String(200))
     file_type = db.Column(db.String(50))  # Invoice / PO / Quotation
     file_path = db.Column(db.String(200))
+    asset_id = db.Column(db.Integer)
+    vendor_id = db.Column(db.Integer)

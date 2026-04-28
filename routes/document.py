@@ -9,23 +9,37 @@ UPLOAD_FOLDER = 'uploads'
 
 @document_bp.route('/upload', methods=['POST'])
 def upload_file():
-    file = request.files['file']
+    file = request.files.get('file')
     file_type = request.form.get('type')
+    asset_id = request.form.get('asset_id')
+    vendor_id = request.form.get('vendor_id')
 
-    if file:
-        file_path = os.path.join(os.getcwd(), doc.file_path)
-        file.save(file_path)
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
 
-        doc = Document(
-            file_name=file.filename,
-            file_type=file_type,
-            file_path=file_path
-        )
+    # ✅ Ensure uploads folder exists
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
 
-        db.session.add(doc)
-        db.session.commit()
+    # ✅ Correct file path
+    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
 
-        return jsonify({"message": "File uploaded successfully"})
+    # ✅ Save file
+    file.save(file_path)
+
+    # ✅ Create DB entry AFTER saving file
+    doc = Document(
+        file_name=file.filename,
+        file_type=file_type,
+        file_path=file_path,
+        asset_id=asset_id,
+        vendor_id=vendor_id
+    )
+
+    db.session.add(doc)
+    db.session.commit()
+
+    return jsonify({"message": "File uploaded successfully"})
     
 @document_bp.route('/documents', methods=['GET'])
 def get_documents():
@@ -35,7 +49,9 @@ def get_documents():
             "id": d.id,
             "name": d.file_name,
             "type": d.file_type,
-            "path": d.file_path
+            "path": d.file_path,
+            "asset_id": d.asset_id,
+            "vendor_id": d.vendor_id
         } for d in docs
     ])
 

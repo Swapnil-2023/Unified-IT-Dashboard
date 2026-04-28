@@ -6,3 +6,4 @@ class Asset(db.Model):
     type = db.Column(db.String(50))
     status = db.Column(db.String(50))
     assigned_user_id = db.Column(db.Integer)
+    vendor_id = db.Column(db.Integer)

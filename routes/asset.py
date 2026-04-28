@@ -13,7 +13,9 @@ def get_assets():
             "id": a.id,
             "name": a.name,
             "type": a.type,
-            "status": a.status
+            "status": a.status,
+            "assigned_user_id": a.assigned_user_id,
+            "vendor_id": a.vendor_id
         } for a in assets
     ])
 
@@ -25,7 +27,9 @@ def add_asset():
     asset = Asset(
         name=data['name'],
         type=data['type'],
-        status="Active"
+        status="Active",
+        assigned_user_id=data.get('assigned_user_id'),
+        vendor_id=data.get('vendor_id')
     )
 
     db.session.add(asset)
