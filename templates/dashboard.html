@@ -114,8 +114,8 @@ function loadAssets() {
             // ✅ Asset display with relationships
             li.innerHTML = `
                 ${asset.name} (${asset.type}) - ${asset.status}
-                | 👤 ${asset.user}
-                | 🏢 ${asset.vendor}
+                | 👤 User: ${asset.user_name}
+                | 🏢 Vendor: ${asset.vendor_name}
                 <button onclick="deleteAsset(${asset.id})">Delete</button>
             `;
             

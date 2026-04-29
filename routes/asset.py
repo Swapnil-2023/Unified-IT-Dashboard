@@ -10,17 +10,25 @@ asset_bp = Blueprint('asset', __name__)
 @asset_bp.route('/assets', methods=['GET'])
 def get_assets():
     assets = Asset.query.all()
-    return jsonify([
-    {
-        "id": a.id,
-        "name": a.name,
-        "type": a.type,
-        "status": a.status,
-        "user": User.query.get(a.assigned_user_id).name if a.assigned_user_id else "Unassigned",
-        "vendor": Vendor.query.get(a.vendor_id).name if a.vendor_id else "No Vendor"
-    }
-    for a in assets
-])
+
+    result = []
+
+    for a in assets:
+        print("DEBUG:", a.name, a.assigned_user_id, a.vendor_id)
+        
+        user = User.query.get(a.assigned_user_id)
+        vendor = Vendor.query.get(a.vendor_id)
+
+        result.append({
+            "id": a.id,
+            "name": a.name,
+            "type": a.type,
+            "status": a.status,
+            "user_name": user.name if user else "Unassigned",
+            "vendor_name": vendor.name if vendor else "No Vendor"
+        })
+
+    return jsonify(result)
 
 # ADD asset
 @asset_bp.route('/assets', methods=['POST'])
