@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from models.asset import Asset
 from models import db
+from models.user import User
+from models.vendor import Vendor
 
 asset_bp = Blueprint('asset', __name__)
 
@@ -9,15 +11,16 @@ asset_bp = Blueprint('asset', __name__)
 def get_assets():
     assets = Asset.query.all()
     return jsonify([
-        {
-            "id": a.id,
-            "name": a.name,
-            "type": a.type,
-            "status": a.status,
-            "assigned_user_id": a.assigned_user_id,
-            "vendor_id": a.vendor_id
-        } for a in assets
-    ])
+    {
+        "id": a.id,
+        "name": a.name,
+        "type": a.type,
+        "status": a.status,
+        "user": User.query.get(a.assigned_user_id).name if a.assigned_user_id else "Unassigned",
+        "vendor": Vendor.query.get(a.vendor_id).name if a.vendor_id else "No Vendor"
+    }
+    for a in assets
+])
 
 # ADD asset
 @asset_bp.route('/assets', methods=['POST'])

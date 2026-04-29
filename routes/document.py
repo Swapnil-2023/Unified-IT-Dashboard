@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from models.document import Document
 from models import db
+from models.asset import Asset
+from models.vendor import Vendor
 import os
 
 document_bp = Blueprint('document', __name__)
@@ -45,15 +47,15 @@ def upload_file():
 def get_documents():
     docs = Document.query.all()
     return jsonify([
-        {
-            "id": d.id,
-            "name": d.file_name,
-            "type": d.file_type,
-            "path": d.file_path,
-            "asset_id": d.asset_id,
-            "vendor_id": d.vendor_id
-        } for d in docs
-    ])
+    {
+        "id": d.id,
+        "name": d.file_name,
+        "type": d.file_type,
+        "asset_name": Asset.query.get(d.asset_id).name if d.asset_id else "None",
+        "vendor_name": Vendor.query.get(d.vendor_id).name if d.vendor_id else "None"
+    }
+    for d in docs
+])
 
 # Delete Document
 import os

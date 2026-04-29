@@ -110,11 +110,19 @@ function loadAssets() {
 
         data.forEach(asset => {
             let li = document.createElement('li');
-            li.innerText = `${asset.name} (${asset.type}) - ${asset.status}`;
+            
+            // ✅ Asset display with relationships
+            li.innerHTML = `
+                ${asset.name} (${asset.type}) - ${asset.status}
+                | 👤 ${asset.user}
+                | 🏢 ${asset.vendor}
+                <button onclick="deleteAsset(${asset.id})">Delete</button>
+            `;
+            
             list.appendChild(li);
-            li.innerHTML = `${asset.name} (${asset.type}) - ${asset.status}
-            <button onclick="deleteAsset(${asset.id})">Delete</button>`;
-
+            
+            // ✅ Keep dropdown population (IMPORTANT)
+             
             if (docAssetSelect) {
                 let option = document.createElement('option');
                 option.value = asset.id;
@@ -312,10 +320,15 @@ function loadDocuments() {
 
         data.forEach(doc => {
             let li = document.createElement('li');
-            li.innerText = `${doc.name} (${doc.type})`;
+            
+            li.innerHTML = `
+                ${doc.name} (${doc.type})
+                | 🖥️ ${doc.asset_name}
+                | 🏢 ${doc.vendor_name}
+                <button onclick="deleteDocument(${doc.id})">Delete</button>
+            `;
+                
             list.appendChild(li);
-            li.innerHTML = `${doc.name} (${doc.type})
-            <button onclick="deleteDocument(${doc.id})">Delete</button>`;
         });
     });
 }
