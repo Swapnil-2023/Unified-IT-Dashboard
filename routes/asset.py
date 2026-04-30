@@ -14,10 +14,9 @@ def get_assets():
     result = []
 
     for a in assets:
-        print("DEBUG:", a.name, a.assigned_user_id, a.vendor_id)
         
-        user = User.query.get(a.assigned_user_id)
-        vendor = Vendor.query.get(a.vendor_id)
+        user = User.query.get(a.assigned_user_id) if a.assigned_user_id else None
+        vendor = Vendor.query.get(a.vendor_id) if a.vendor_id else None
 
         result.append({
             "id": a.id,
@@ -52,6 +51,9 @@ def add_asset():
 @asset_bp.route('/assets/<int:id>', methods=['DELETE'])
 def delete_asset(id):
     asset = Asset.query.get(id)
+
+    if not asset:
+        return jsonify({"error": "Asset not found"}), 404
 
     db.session.delete(asset)
     db.session.commit()
