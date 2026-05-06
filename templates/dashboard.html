@@ -466,19 +466,30 @@ function filterDocumentsByAsset(assetId) {
 
 function selectDocument(docId) {
     let doc = allDocuments.find(d => d.id == docId);
-
     if (!doc) return;
 
-    // 🎯 Auto-select Asset
     let assetSelect = document.getElementById('docAsset');
-    assetSelect.value = doc.asset_id;
-
-    // 🎯 Trigger vendor filter (important)
-    filterVendorByAsset();
-
-    // 🎯 Auto-select Vendor
     let vendorSelect = document.getElementById('docVendor');
-    vendorSelect.value = doc.vendor_id;
+
+    // 🎯 Set Asset (if exists)
+    if (doc.asset_id) {
+        assetSelect.value = doc.asset_id;
+        filterVendorByAsset();  // normal flow
+    } else {
+        assetSelect.value = "";
+    }
+
+    // 🎯 Always handle Vendor (fallback logic)
+    vendorSelect.innerHTML = "";
+
+    let vendor = allVendors.find(v => v.id == doc.vendor_id);
+
+    if (vendor) {
+        let option = document.createElement('option');
+        option.value = vendor.id;
+        option.text = vendor.name;
+        vendorSelect.appendChild(option);
+    }
 }
 
 </script>
