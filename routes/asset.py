@@ -23,6 +23,8 @@ def get_assets():
             "name": a.name,
             "type": a.type,
             "status": a.status,
+            "assigned_user_id": a.assigned_user_id,
+            "vendor_id": a.vendor_id,
             "user_name": user.name if user else "Unassigned",
             "vendor_name": vendor.name if vendor else "No Vendor"
         })

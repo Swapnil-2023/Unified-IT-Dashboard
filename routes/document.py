@@ -43,19 +43,30 @@ def upload_file():
 
     return jsonify({"message": "File uploaded successfully"})
     
+# TO-DO (Stability Patch):
+# Replace inline Asset/Vendor queries with safe None checks
+# to avoid crashes when linked records are deleted.
 @document_bp.route('/documents', methods=['GET'])
 def get_documents():
     docs = Document.query.all()
-    return jsonify([
-    {
-        "id": d.id,
-        "name": d.file_name,
-        "type": d.file_type,
-        "asset_name": Asset.query.get(d.asset_id).name if d.asset_id else "None",
-        "vendor_name": Vendor.query.get(d.vendor_id).name if d.vendor_id else "None"
-    }
-    for d in docs
-])
+
+    result = []
+
+    for d in docs:
+        asset = Asset.query.get(d.asset_id)
+        vendor = Vendor.query.get(d.vendor_id)
+
+        result.append({
+            "id": d.id,
+            "name": d.file_name,
+            "type": d.file_type,
+            "asset_name": asset.name if asset else "Unknown Asset",
+            "vendor_name": vendor.name if vendor else "Unknown Vendor",
+            "asset_id": d.asset_id,
+            "vendor_id": d.vendor_id,
+        })
+
+    return jsonify(result)
 
 # Delete Document
 import os

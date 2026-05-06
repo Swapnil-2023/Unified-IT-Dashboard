@@ -2,72 +2,127 @@
 <html>
 <head>
     <title>Dashboard</title>
+    
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+        margin: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .section {
+        background: white;
+        padding: 15px;
+        margin: 20px auto;
+        max-width: 800px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+
+    button {
+        margin-left: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    input, select {
+        margin: 5px;
+        padding: 5px;
+    }
+
+    </style>
 </head>
 <body>
 
 <h1>Unified IT Dashboard</h1>
 
-<h2>📊 Stats</h2>
-<div id="stats"></div>
+<div class="section">
+    <h2>📊 Stats</h2>
+    <div id="stats"></div>
+</div>
 
-<h2>🖥️ Server Health</h2>
-<div id="monitoring"></div>
+<div class="section">
+    <h2>🖥️ Server Health</h2>
+    <div id="monitoring"></div>
+</div>
 
-<h2>🌡️ Server Room Weather</h2>
-<div id="iot"></div>
+<div class="section">
+    <h2>🌡️ Server Room Weather</h2>
+    <div id="iot"></div>
+</div>
 
-<h2>🖥️ Asset Management</h2>
+<div class="section">
+    <h2>🖥️ Asset Management</h2>
 
-<input type="text" id="assetName" placeholder="assetName">
-<input type="text" id="assetType" placeholder="Asset assetType">
-<select id="userSelect"></select>
-<select id="vendorSelect"></select>
-<button onclick="addAsset()">Add Asset</button>
+    <input type="text" id="assetName" placeholder="Asset Name">
+    <input type="text" id="assetType" placeholder="Asset Type">
+    <select id="userSelect"></select>
+    <select id="vendorSelect"></select>
+    <button onclick="addAsset()">Add Asset</button>
 
-<ul id="assetList"></ul>
+    <ul id="assetList"></ul>
 
-<h2>👤 Users</h2>
+    <button onclick="loadDocuments()">Show All Documents</button>
+</div>
 
-<input type="text" id="userName" placeholder="Name">
-<input type="text" id="userEmail" placeholder="Email">
-<input type="text" id="userPassword" placeholder="Password">
-<input type="text" id="userRole" placeholder="Role">
+<div class="section">
+    <h2>👤 Users</h2>
 
-<button onclick="addUser()">Add User</button>
+    <input type="text" id="userName" placeholder="Name">
+    <input type="text" id="userEmail" placeholder="Email">
+    <input type="text" id="userPassword" placeholder="Password">
+    <input type="text" id="userRole" placeholder="Role">
 
-<ul id="userList"></ul>
+    <button onclick="addUser()">Add User</button>
 
-<h2>🎫 Ticket System</h2>
+    <ul id="userList"></ul>
+</div>
 
-<input type="text" id="ticketTitle" placeholder="Ticket Title">
-<input type="text" id="ticketPriority" placeholder="Priority (High/Medium/Low)">
-<button onclick="addTicket()">Create Ticket</button>
+<div class="section">
+    <h2>🎫 Ticket System</h2>
 
-<ul id="ticketList"></ul>
+    <input type="text" id="ticketTitle" placeholder="Ticket Title">
+    <input type="text" id="ticketPriority" placeholder="Priority (High/Medium/Low)">
+    <button onclick="addTicket()">Create Ticket</button>
 
-<h2>🏢 Vendor Management</h2>
+    <ul id="ticketList"></ul>
+</div>
 
-<input type="text" id="vendorName" placeholder="Vendor Name">
-<input type="text" id="vendorContact" placeholder="Contact">
-<input type="text" id="vendorEmail" placeholder="Email">
-<button onclick="addVendor()">Add Vendor</button>
+<div class="section">
+    <h2>🏢 Vendor Management</h2>
 
-<ul id="vendorList"></ul>
+    <input type="text" id="vendorName" placeholder="Vendor Name">
+    <input type="text" id="vendorContact" placeholder="Contact">
+    <input type="text" id="vendorEmail" placeholder="Email">
+    <button onclick="addVendor()">Add Vendor</button>
 
-<h2>📁 Document Upload</h2>
+    <ul id="vendorList"></ul>
+</div>
 
-<input type="file" id="fileInput">
-<select id="fileType">
-    <option value="Invoice">Invoice</option>
-    <option value="PO">PO</option>
-    <option value="Quotation">Quotation</option>
-</select>
-<select id="docAsset"></select>
-<select id="docVendor"></select>
+<div class="section">
+    <h2>📁 Document Upload</h2>
 
-<button onclick="uploadFile()">Upload</button>
+    <input type="file" id="fileInput">
+    <select id="fileType">
+        <option value="Invoice">Invoice</option>
+        <option value="PO">PO</option>
+        <option value="Quotation">Quotation</option>
+    </select>
+    <select id="docAsset" onchange="filterVendorByAsset()"></select>
+    <select id="docVendor"></select>
 
-<ul id="docList"></ul>
+    <button onclick="uploadFile()">Upload</button>
+
+    <ul id="docList"></ul>
+</div>
 
 <script>
 function loadData() {
@@ -98,10 +153,16 @@ setInterval(loadData, 5000); // refresh every 5 sec
 </script>
 
 <script>
+    let allAssets = [];
+    let allVendors = [];
+
 function loadAssets() {
     fetch('/assets')
     .then(res => res.json())
     .then(data => {
+        allAssets = data;
+
+        let assetMap = {};
         let list = document.getElementById('assetList');
         list.innerHTML = "";
 
@@ -109,11 +170,16 @@ function loadAssets() {
         if (docAssetSelect) docAssetSelect.innerHTML = "";
 
         data.forEach(asset => {
+            assetMap[asset.id] = asset;
+
             let li = document.createElement('li');
             
             // ✅ Asset display with relationships
             li.innerHTML = `
-                ${asset.name} (${asset.type}) - ${asset.status}
+                <span onclick="filterDocumentsByAsset(${asset.id})" style="cursor:pointer; color:blue; font-weight:bold;">
+                    ${asset.name}
+                </span>
+                (${asset.type}) - ${asset.status}
                 | 👤 User: ${asset.user_name}
                 | 🏢 Vendor: ${asset.vendor_name}
                 <button onclick="deleteAsset(${asset.id})">Delete</button>
@@ -148,6 +214,7 @@ function addAsset() {
     .then(data => {
         console.log(data);
         loadAssets();
+        loadDocuments();
     })
     .catch(err => console.error("Error:", err));
 }
@@ -156,8 +223,12 @@ function deleteAsset(id) {
     fetch(`/assets/${id}`, {
         method: 'DELETE'
     })
-    .then(() => loadAssets());
+    .then(() => {
+        loadAssets();
+        loadDocuments();  // 🔥 keep UI in sync
+    });
 }
+
 
 loadAssets();
 </script>
@@ -236,6 +307,8 @@ function loadVendors() {
     fetch('/vendors')
     .then(res => res.json())
     .then(data => {
+        allVendors = data; // ✅ store globally
+
         let list = document.getElementById('vendorList');
         list.innerHTML = "";
         let assetVendorSelect = document.getElementById('vendorSelect');
@@ -288,9 +361,33 @@ function deleteVendor(id) {
 }
 
 loadVendors();
+
+function filterVendorByAsset() {
+    let selectedAssetId = document.getElementById('docAsset').value;
+
+    let docVendorSelect = document.getElementById('docVendor');
+    docVendorSelect.innerHTML = "";
+
+    let selectedAsset = allAssets.find(a => a.id == selectedAssetId);
+
+    if (!selectedAsset) return;
+
+    // Find matching vendor
+    let vendor = allVendors.find(v => v.id == selectedAsset.vendor_id);
+
+    if (vendor) {
+        let option = document.createElement('option');
+        option.value = vendor.id;
+        option.text = vendor.name;
+        docVendorSelect.appendChild(option);
+    }
+}
+
 </script>
 
 <script>
+    let allDocuments = [];
+
 function uploadFile() {
     let file = document.getElementById('fileInput').files[0];
     let type = document.getElementById('fileType').value;
@@ -315,6 +412,8 @@ function loadDocuments() {
     fetch('/documents')
     .then(res => res.json())
     .then(data => {
+        allDocuments = data;
+
         let list = document.getElementById('docList');
         list.innerHTML = "";
 
@@ -322,9 +421,13 @@ function loadDocuments() {
             let li = document.createElement('li');
             
             li.innerHTML = `
-                ${doc.name} (${doc.type})
-                | 🖥️ ${doc.asset_name}
-                | 🏢 ${doc.vendor_name}
+                <span onclick="selectDocument(${doc.id})" style="cursor:pointer; color:green; font-weight:bold;">
+                    ${doc.name}
+                </span>
+
+                (${doc.type})
+                | 🖥️ ${doc.asset_name || "N/A"}
+                | 🏢 ${doc.vendor_name || "N/A"}
                 <button onclick="deleteDocument(${doc.id})">Delete</button>
             `;
                 
@@ -340,6 +443,44 @@ function deleteDocument(id) {
 }
 
 loadDocuments();
+
+function filterDocumentsByAsset(assetId) {
+    let list = document.getElementById('docList');
+    list.innerHTML = "";
+
+    let filteredDocs = allDocuments.filter(doc => doc.asset_id == assetId);
+
+    filteredDocs.forEach(doc => {
+        let li = document.createElement('li');
+
+        li.innerHTML = `
+            ${doc.name} (${doc.type})
+            | 🖥️ ${doc.asset_name || "N/A"}
+            | 🏢 ${doc.vendor_name || "N/A"}
+            <button onclick="deleteDocument(${doc.id})">Delete</button>
+        `;
+
+        list.appendChild(li);
+    });
+}
+
+function selectDocument(docId) {
+    let doc = allDocuments.find(d => d.id == docId);
+
+    if (!doc) return;
+
+    // 🎯 Auto-select Asset
+    let assetSelect = document.getElementById('docAsset');
+    assetSelect.value = doc.asset_id;
+
+    // 🎯 Trigger vendor filter (important)
+    filterVendorByAsset();
+
+    // 🎯 Auto-select Vendor
+    let vendorSelect = document.getElementById('docVendor');
+    vendorSelect.value = doc.vendor_id;
+}
+
 </script>
 
 <script>
