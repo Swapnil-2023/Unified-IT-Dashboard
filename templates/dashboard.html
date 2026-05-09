@@ -233,11 +233,26 @@
         }
     }
 
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: auto;
+        margin-bottom: 20px;
+    }
+
     </style>
 </head>
 <body>
 
-<h1>Unified IT Dashboard</h1>
+<div class="top-bar">
+    <h1>Unified IT Dashboard</h1>
+
+    <a href="/logout">
+        <button>Logout</button>
+    </a>
+</div>
 
 <div class="stats-container">
     <div class="stat-card" id="stat-assets">Assets: 0</div>
