@@ -12,11 +12,14 @@ from routes.user import user_bp
 from routes.auth import auth_bp
 
 app = Flask(__name__)
+
+app.config.from_object(Config)
+
 app.secret_key = "supersecretkey"
+
 app.config['SESSION_TYPE'] = 'filesystem'
 
 Session(app)
-app.config.from_object(Config)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(asset_bp)
 app.register_blueprint(ticket_bp)

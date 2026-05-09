@@ -971,5 +971,55 @@ function deleteUser(id) {
 loadUsers();
 </script>
 
+<script>
+
+setInterval(() => {
+
+    fetch('/check-session')
+    .then(res => res.json())
+    .then(data => {
+
+        if (!data.active) {
+            alert("Session expired. Please login again.");
+            window.location.href = "/login";
+        }
+
+    });
+
+}, 30000); // check every 30 seconds
+
+</script>
+
+<script>
+
+let idleTime = 0;
+
+// Reset timer on activity
+document.onmousemove = resetTimer;
+document.onkeypress = resetTimer;
+document.onclick = resetTimer;
+document.onscroll = resetTimer;
+
+function resetTimer() {
+    idleTime = 0;
+}
+
+// Check every second
+setInterval(() => {
+
+    idleTime++;
+
+    // 30 seconds for testing
+    if (idleTime >= 180) {
+
+        alert("Session expired due to inactivity.");
+
+        window.location.href = "/logout";
+    }
+
+}, 1000);
+
+</script>
+
 </body>
 </html>

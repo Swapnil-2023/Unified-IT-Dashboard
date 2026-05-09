@@ -18,6 +18,7 @@ def login():
         ).first()
 
         if user:
+            session.permanent = True
             session['user'] = user.email
             return redirect('/')
 
@@ -33,3 +34,11 @@ def logout():
     session.pop('user', None)
 
     return redirect('/login')
+
+@auth_bp.route('/check-session')
+def check_session():
+
+    if 'user' in session:
+        return {"active": True}
+
+    return {"active": False}
