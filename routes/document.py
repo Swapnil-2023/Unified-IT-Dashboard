@@ -3,6 +3,7 @@ from models.document import Document
 from models import db
 from models.asset import Asset
 from models.vendor import Vendor
+from flask import send_from_directory
 import os
 
 document_bp = Blueprint('document', __name__)
@@ -64,6 +65,7 @@ def get_documents():
             "vendor_name": vendor.name if vendor else "Unknown Vendor",
             "asset_id": d.asset_id,
             "vendor_id": d.vendor_id,
+            "file_url": f"/documents/view/{d.file_name}",
         })
 
     return jsonify(result)
@@ -93,3 +95,10 @@ def delete_document(id):
     db.session.commit()
 
     return jsonify({"message": "Document deleted"})
+
+@document_bp.route('/documents/view/<filename>')
+def view_document(filename):
+    return send_from_directory(
+        UPLOAD_FOLDER,
+        filename
+    )

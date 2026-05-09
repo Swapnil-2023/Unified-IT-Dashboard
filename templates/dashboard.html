@@ -5,37 +5,202 @@
     
     <style>
     body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f9;
-        margin: 20px;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 20px;
     }
-
+    
+    /* Title */
     h1 {
         text-align: center;
+        margin-bottom: 20px;
     }
 
+    /* 🔥 Stats Cards Row */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    /* 🔥 Main Grid Layout */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 20px;
+        max-width: 1400px;
+        margin: 20px auto;
+    }
+
+    /* Tiles */
     .section {
         background: white;
         padding: 15px;
-        margin: 20px auto;
-        max-width: 800px;
         border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        transition: 0.2s ease;
+    }
+
+    .section:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Add KPI Grid CSS*/
+    
+    .tile {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    h2 {
-        margin-top: 0;
+    .tile h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #555;
     }
 
+    .tile p {
+        font-size: 28px;
+        margin: 10px 0 0;
+        font-weight: bold;
+    }
+
+    /* Buttons */
     button {
         margin-left: 5px;
         padding: 5px 10px;
         cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background: #007bff;
+        color: white;
     }
 
+    button:hover {
+        background: #0056b3;
+    }
+
+    /* Delete button */
+    button.delete {
+        background: #dc3545;
+    }
+
+    button.delete:hover {
+        background: #a71d2a;
+    }
+
+    /* Inputs */
     input, select {
         margin: 5px;
         padding: 5px;
+    }
+
+    /* Status Badges */
+    .badge {
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .badge-active {
+        background: #28a745;
+    }
+
+    .badge-open {
+        background: #ffc107;
+        color: black;
+    }
+
+    .badge-closed {
+        background: #dc3545;
+    }
+
+    /* Better Lists */
+    ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    li {
+        background: #f8f9fa;
+        margin-bottom: 8px;
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+    /* Better Row Layout */
+    .list-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .list-info {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .list-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    /* Form Rows */
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .form-row input,
+    .form-row select {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    /* Better section spacing */
+    .section h2 {
+        margin-bottom: 15px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+
+        .stats-container {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            flex-direction: column;
+        }
+
+        button {
+            width: 100%;
+        }
     }
 
     </style>
@@ -44,84 +209,124 @@
 
 <h1>Unified IT Dashboard</h1>
 
-<div class="section">
-    <h2>📊 Stats</h2>
-    <div id="stats"></div>
+<div class="stats-container">
+    <div class="stat-card" id="stat-assets">Assets: 0</div>
+    <div class="stat-card" id="stat-users">Users: 0</div>
+    <div class="stat-card" id="stat-open">Open Tickets: 0</div>
+    <div class="stat-card" id="stat-closed">Closed Tickets: 0</div>
 </div>
 
-<div class="section">
-    <h2>🖥️ Server Health</h2>
-    <div id="monitoring"></div>
-</div>
+<div class="dashboard-grid">
 
-<div class="section">
-    <h2>🌡️ Server Room Weather</h2>
-    <div id="iot"></div>
-</div>
+    <div class="section">
+        <h2>🖥️ Server Health</h2>
+        <div id="monitoring"></div>
+    </div>
 
-<div class="section">
-    <h2>🖥️ Asset Management</h2>
+    <div class="section">
+        <h2>🌡️ Server Room Weather</h2>
+        <div id="iot"></div>
+    </div>
 
-    <input type="text" id="assetName" placeholder="Asset Name">
-    <input type="text" id="assetType" placeholder="Asset Type">
-    <select id="userSelect"></select>
-    <select id="vendorSelect"></select>
-    <button onclick="addAsset()">Add Asset</button>
+    <div class="section">
+        <h2>🖥️ Asset Management</h2>
 
-    <ul id="assetList"></ul>
+        <div class="form-row">
+            <input type="text" id="assetName" placeholder="Asset Name">
+            <input type="text" id="assetType" placeholder="Asset Type">
+        </div>
 
-    <button onclick="loadDocuments()">Show All Documents</button>
-</div>
+        <div class="form-row">
+            <select id="userSelect"></select>
+            <select id="vendorSelect"></select>
+            <button onclick="addAsset()">Add Asset</button>
+        </div>
+        
+        <input type="text"
+                id="assetSearch"
+                placeholder="Search Assets..."
+                onkeyup="searchAssets()">
 
-<div class="section">
-    <h2>👤 Users</h2>
+        <ul id="assetList"></ul>
 
-    <input type="text" id="userName" placeholder="Name">
-    <input type="text" id="userEmail" placeholder="Email">
-    <input type="text" id="userPassword" placeholder="Password">
-    <input type="text" id="userRole" placeholder="Role">
+        <button onclick="loadDocuments()">Show All Documents</button>
+    </div>
 
-    <button onclick="addUser()">Add User</button>
+    <div class="section">
+        <h2>👤 Users</h2>
 
-    <ul id="userList"></ul>
-</div>
+        <input type="text" id="userName" placeholder="Name">
+        <input type="text" id="userEmail" placeholder="Email">
+        <input type="text" id="userPassword" placeholder="Password">
+        <input type="text" id="userRole" placeholder="Role">
 
-<div class="section">
-    <h2>🎫 Ticket System</h2>
+        <button onclick="addUser()">Add User</button>
 
-    <input type="text" id="ticketTitle" placeholder="Ticket Title">
-    <input type="text" id="ticketPriority" placeholder="Priority (High/Medium/Low)">
-    <button onclick="addTicket()">Create Ticket</button>
+        <ul id="userList"></ul>
+    </div>
 
-    <ul id="ticketList"></ul>
-</div>
+    <div class="section">
+        <h2>🎫 Ticket System</h2>
 
-<div class="section">
-    <h2>🏢 Vendor Management</h2>
+        <div class="form-row">
+            <input type="text" id="ticketTitle" placeholder="Ticket Title">
 
-    <input type="text" id="vendorName" placeholder="Vendor Name">
-    <input type="text" id="vendorContact" placeholder="Contact">
-    <input type="text" id="vendorEmail" placeholder="Email">
-    <button onclick="addVendor()">Add Vendor</button>
+            <select id="ticketPriority">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
 
-    <ul id="vendorList"></ul>
-</div>
+            <button onclick="addTicket()">Create Ticket</button>
+        </div>
 
-<div class="section">
-    <h2>📁 Document Upload</h2>
+        <ul id="ticketList"></ul>
+    </div>
 
-    <input type="file" id="fileInput">
-    <select id="fileType">
-        <option value="Invoice">Invoice</option>
-        <option value="PO">PO</option>
-        <option value="Quotation">Quotation</option>
-    </select>
-    <select id="docAsset" onchange="filterVendorByAsset()"></select>
-    <select id="docVendor"></select>
+    <div class="section">
+        <h2>🏢 Vendor Management</h2>
 
-    <button onclick="uploadFile()">Upload</button>
+        <div class="form-row">
+            <input type="text" id="vendorName" placeholder="Vendor Name">
+            <input type="text" id="vendorContact" placeholder="Contact">
+        </div>
 
-    <ul id="docList"></ul>
+        <div class="form-row">
+            <input type="text" id="vendorEmail" placeholder="Email">
+            <button onclick="addVendor()">Add Vendor</button>
+        </div>
+
+        <ul id="vendorList"></ul>
+    </div>
+
+    <div class="section">
+        <h2>📁 Document Upload</h2>
+
+        <div class="form-row">
+            <input type="file" id="fileInput">
+
+            <select id="fileType">
+                <option value="Invoice">Invoice</option>
+                <option value="PO">PO</option>
+                <option value="Quotation">Quotation</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <select id="docAsset" onchange="filterVendorByAsset()"></select>
+            <select id="docVendor"></select>
+
+            <button onclick="uploadFile()">Upload</button>
+        </div>
+        
+        <input type="text"
+                id="docSearch"
+                placeholder="Search Documents..."
+                onkeyup="searchDocuments()">
+
+        <ul id="docList"></ul>
+    </div>
+
 </div>
 
 <script>
@@ -129,8 +334,10 @@ function loadData() {
     fetch('/dashboard/stats')
     .then(res => res.json())
     .then(data => {
-        document.getElementById('stats').innerText =
-            `Assets: ${data.assets}, Users: ${data.users}, Open Tickets: ${data.tickets_open}, Closed Tickets: ${data.tickets_closed}`;
+        document.getElementById('stat-assets').innerText = `Assets: ${data.assets}`;
+        document.getElementById('stat-users').innerText = `Users: ${data.users}`;
+        document.getElementById('stat-open').innerText = `Open Tickets: ${data.tickets_open}`;
+        document.getElementById('stat-closed').innerText = `Closed Tickets: ${data.tickets_closed}`;
     });
 
     fetch('/dashboard/monitoring')
@@ -176,14 +383,37 @@ function loadAssets() {
             
             // ✅ Asset display with relationships
             li.innerHTML = `
-                <span onclick="filterDocumentsByAsset(${asset.id})" style="cursor:pointer; color:blue; font-weight:bold;">
-                    ${asset.name}
-                </span>
-                (${asset.type}) - ${asset.status}
-                | 👤 User: ${asset.user_name}
-                | 🏢 Vendor: ${asset.vendor_name}
-                <button onclick="deleteAsset(${asset.id})">Delete</button>
-            `;
+                <div class="list-row">
+
+                    <div class="list-info">
+
+                        <span onclick="filterDocumentsByAsset(${asset.id})"
+                            style="cursor:pointer; color:blue; font-weight:bold;">
+                            ${asset.name}
+                        </span>
+
+                        (${asset.type})
+
+                        <span class="badge badge-active">
+                            ${asset.status}
+                        </span>
+
+                        | 👤 User: ${asset.user_name}
+                        | 🏢 Vendor: ${asset.vendor_name}
+
+                    </div>
+
+                    <div class="list-actions">
+
+                        <button class="delete"
+                                onclick="deleteAsset(${asset.id})">
+                            Delete
+                    </button>
+
+                </div>
+
+            </div>
+        `;
             
             list.appendChild(li);
             
@@ -231,6 +461,40 @@ function deleteAsset(id) {
 
 
 loadAssets();
+
+function searchAssets() {
+    let search = document.getElementById('assetSearch').value.toLowerCase();
+
+    let filtered = allAssets.filter(asset =>
+        asset.name.toLowerCase().includes(search) ||
+        asset.type.toLowerCase().includes(search)
+    );
+
+    let list = document.getElementById('assetList');
+    list.innerHTML = "";
+
+    filtered.forEach(asset => {
+        let li = document.createElement('li');
+
+        li.innerHTML = `
+            <span onclick="filterDocumentsByAsset(${asset.id})"
+                  style="cursor:pointer; color:blue;">
+                ${asset.name}
+            </span>
+
+            (${asset.type})
+            <span class="badge badge-active">${asset.status}</span>
+
+            | 👤 User: ${asset.user_name}
+            | 🏢 Vendor: ${asset.vendor_name}
+
+            <button onclick="deleteAsset(${asset.id})">Delete</button>
+        `;
+
+        list.appendChild(li);
+    });
+}
+
 </script>
 
 <script>
@@ -253,9 +517,30 @@ function loadTickets() {
     }
 
     li.innerHTML = `
-        ${ticket.title} (${ticket.priority}) - ${ticket.status}
-        ${actionButton}
-        <button onclick="deleteTicket(${ticket.id})">Delete</button>
+        <div class="list-row">
+
+            <div class="list-info">
+                ${ticket.title} (${ticket.priority})
+
+                <span class="badge ${
+                    ticket.status === "Open"
+                    ? "badge-open"
+                    : "badge-closed"
+                }">
+                    ${ticket.status}
+                </span>
+            </div>
+
+            <div class="list-actions">
+                ${actionButton}
+
+                <button class="delete"
+                        onclick="deleteTicket(${ticket.id})">
+                    Delete
+                </button>
+            </div>
+
+        </div>
     `;
 
     list.appendChild(li);
@@ -321,8 +606,24 @@ function loadVendors() {
             let li = document.createElement('li');
             li.innerText = `${v.name} (${v.contact}) - ${v.email}`;
             list.appendChild(li);
-            li.innerHTML = `${v.name} (${v.contact}) - ${v.email}
-            <button onclick="deleteVendor(${v.id})">Delete</button>`;
+            li.innerHTML = `
+                <div class="list-row">
+
+                    <div class="list-info">
+                        ${v.name} (${v.contact}) - ${v.email}
+                    </div>
+
+                    <div class="list-actions">
+
+                        <button class="delete"
+                        onclick="deleteVendor(${v.id})">
+                        Delete
+                    </button>
+
+                    </div>
+
+                </div>
+            `;
 
             // 🔽 ADD THIS BLOCK
             if (assetVendorSelect) {
@@ -421,14 +722,37 @@ function loadDocuments() {
             let li = document.createElement('li');
             
             li.innerHTML = `
-                <span onclick="selectDocument(${doc.id})" style="cursor:pointer; color:green; font-weight:bold;">
-                    ${doc.name}
-                </span>
+                <div class="list-row">
 
-                (${doc.type})
-                | 🖥️ ${doc.asset_name || "N/A"}
-                | 🏢 ${doc.vendor_name || "N/A"}
-                <button onclick="deleteDocument(${doc.id})">Delete</button>
+                    <div class="list-info">
+
+                        <span onclick="selectDocument(${doc.id})"
+                                style="cursor:pointer; color:green; font-weight:bold;">
+                            ${doc.name}
+                        </span>
+
+                        (${doc.type})
+
+                        | 🖥️ ${doc.asset_name || "N/A"}
+
+                        | 🏢 ${doc.vendor_name || "N/A"}
+
+                    </div>
+
+                    <div class="list-actions">
+
+                        <a href="${doc.file_url}" target="_blank">
+                            <button>View</button>
+                        </a>
+
+                    <button class="delete"
+                        onclick="deleteDocument(${doc.id})">
+                        Delete
+                    </button>
+
+                    </div>
+
+                </div>
             `;
                 
             list.appendChild(li);
@@ -457,7 +781,13 @@ function filterDocumentsByAsset(assetId) {
             ${doc.name} (${doc.type})
             | 🖥️ ${doc.asset_name || "N/A"}
             | 🏢 ${doc.vendor_name || "N/A"}
-            <button onclick="deleteDocument(${doc.id})">Delete</button>
+            <a href="${doc.file_url}" target="_blank">
+                <button>View</button>
+            </a>
+
+            <button onclick="deleteDocument(${doc.id})">
+                Delete
+            </button>
         `;
 
         list.appendChild(li);
@@ -492,6 +822,42 @@ function selectDocument(docId) {
     }
 }
 
+function searchDocuments() {
+    let search = document.getElementById('docSearch').value.toLowerCase();
+
+    let filtered = allDocuments.filter(doc =>
+        doc.name.toLowerCase().includes(search)
+    );
+
+    let list = document.getElementById('docList');
+    list.innerHTML = "";
+
+    filtered.forEach(doc => {
+        let li = document.createElement('li');
+
+        li.innerHTML = `
+            <span onclick="selectDocument(${doc.id})"
+                  style="cursor:pointer; color:green;">
+                ${doc.name}
+            </span>
+
+            (${doc.type})
+            | 🖥️ ${doc.asset_name || "N/A"}
+            | 🏢 ${doc.vendor_name || "N/A"}
+
+            <a href="${doc.file_url}" target="_blank">
+                <button>View</button>
+            </a>
+
+            <button onclick="deleteDocument(${doc.id})">
+                Delete
+            </button>
+        `;
+
+        list.appendChild(li);
+    });
+}
+
 </script>
 
 <script>
@@ -508,9 +874,24 @@ function loadUsers() {
         data.forEach(u => {
             let li = document.createElement('li');
             li.innerHTML = `
-            ${u.name} (${u.role})
-            <button onclick="deleteUser(${u.id})">Delete</button>
+                <div class="list-row">
+
+                    <div class="list-info">
+                        ${u.name} (${u.role})
+                    </div>
+
+                    <div class="list-actions">
+
+                        <button class="delete"
+                        onclick="deleteUser(${u.id})">
+                        Delete
+                        </button>
+
+                    </div>
+
+                </div>
             `;
+
             list.appendChild(li);
 
             let option = document.createElement('option');
