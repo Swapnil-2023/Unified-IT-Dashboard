@@ -197,6 +197,140 @@ Cloudflare Tunnel → Raspberry Pi → Flask Dashboard
 
 ---
 
+# Raspberry Pi Production Deployment
+
+The application was successfully deployed on a Raspberry Pi Zero 2 W using:
+
+* GitHub repository cloning
+* Python virtual environment
+* Flask production hosting
+* Cloudflare Tunnel secure remote access
+* Linux `systemd` service management
+
+---
+
+## Deployment Workflow
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/Swapnil-2023/Unified-IT-Dashboard.git
+```
+
+### 2. Create Runtime Directories
+
+```bash
+mkdir database
+mkdir uploads
+mkdir flask_session
+```
+
+### 3. Create Virtual Environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 4. Install Requirements
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Initialize Database
+
+```bash
+python init_db.py
+```
+
+### 6. Production Flask Configuration
+
+The Flask application was configured for network accessibility using:
+
+```python
+app.run(host='0.0.0.0', port=5000)
+```
+
+This allows access through:
+
+* local network
+* Raspberry Pi hosting
+* Cloudflare Tunnel routing
+
+---
+
+## Cloudflare Tunnel Integration
+
+Cloudflare Tunnel was used to securely expose the Flask dashboard to the internet without port forwarding.
+
+Architecture:
+
+```text
+Public Domain
+      ↓
+Cloudflare Tunnel
+      ↓
+127.0.0.1:5000
+      ↓
+Flask Dashboard on Raspberry Pi
+```
+
+Benefits:
+
+* Secure HTTPS access
+* No router port forwarding required
+* Public access through custom domain
+* Additional Cloudflare security protection
+
+---
+
+## Linux systemd Service Setup
+
+The dashboard was configured as a Linux background service using `systemd`.
+
+Benefits:
+
+* Automatic startup after reboot
+* Runs without active terminal
+* Production-style deployment
+* Service auto-recovery support
+
+Example service:
+
+```ini
+[Unit]
+Description=Unified IT Dashboard
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/Unified-IT-Dashboard
+ExecStart=/home/pi/Unified-IT-Dashboard/venv/bin/python app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+---
+
+## Version Control & GitHub
+
+The project uses Git and GitHub for:
+
+* Source code management
+* Deployment workflow
+* Backup and recovery
+* Version tracking
+* Production deployment through Git clone
+
+GitHub Repository:
+
+[https://github.com/Swapnil-2023/Unified-IT-Dashboard](https://github.com/Swapnil-2023/Unified-IT-Dashboard)
+
+---
+
 # Future Improvements
 
 * Role-based access control
