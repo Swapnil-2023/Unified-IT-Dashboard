@@ -5,3 +5,4 @@ instance/
 uploads/
 *.db
 flask_session/
+*.sqlite3
