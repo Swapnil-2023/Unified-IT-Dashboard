@@ -265,8 +265,8 @@
 <div class="stats-container">
     <div class="stat-card" id="stat-assets">Assets: 0</div>
     <div class="stat-card" id="stat-users">Users: 0</div>
-    <div class="stat-card" id="stat-open">Open Tickets: 0</div>
-    <div class="stat-card" id="stat-closed">Closed Tickets: 0</div>
+    <div class="stat-card" id="stat-open">Pending Tasks: 0</div>
+    <div class="stat-card" id="stat-closed">Completed Tasks: 0</div>
 </div>
 
 <div class="dashboard-grid">
@@ -319,10 +319,10 @@
     </div>
 
     <div class="section">
-        <h2>🎫 Ticket System</h2>
+        <h2>🎫 Task Management</h2>
 
         <div class="form-row">
-            <input type="text" id="ticketTitle" placeholder="Ticket Title">
+            <input type="text" id="ticketTitle" placeholder="Task Title">
 
             <select id="ticketPriority">
                 <option value="Low">Low</option>
@@ -330,7 +330,7 @@
                 <option value="High">High</option>
             </select>
 
-            <button onclick="addTicket()">Create Ticket</button>
+            <button onclick="addTicket()">Create Task</button>
         </div>
 
         <ul id="ticketList"></ul>
@@ -389,8 +389,8 @@ function loadData() {
     .then(data => {
         document.getElementById('stat-assets').innerText = `Assets: ${data.assets}`;
         document.getElementById('stat-users').innerText = `Users: ${data.users}`;
-        document.getElementById('stat-open').innerText = `Open Tickets: ${data.tickets_open}`;
-        document.getElementById('stat-closed').innerText = `Closed Tickets: ${data.tickets_closed}`;
+        document.getElementById('stat-open').innerText = `Pending Tasks: ${data.tickets_open}`;
+        document.getElementById('stat-closed').innerText = `Completed Tasks: ${data.tickets_closed}`;
     });
 
     fetch('/dashboard/monitoring')

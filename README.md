@@ -1,7 +1,7 @@
 # Unified IT Dashboard
 
 A centralized Flask-based IT Management Dashboard designed for small organizations and educational environments.
-This project combines asset management, ticketing, vendor management, document handling, monitoring, and authentication into a single web dashboard.
+This project combines asset management, task management, vendor management, document handling, monitoring, and authentication into a single web dashboard.
 
 ---
 
@@ -28,12 +28,12 @@ This project combines asset management, ticketing, vendor management, document h
 * Admin login system
 * Session timeout support
 
-## Ticket System
+## Task System
 
-* Create support tickets
-* Ticket priority management
-* Open / Close ticket workflow
-* Delete tickets
+* Create task
+* Task priority management
+* Open / Close task workflow
+* Delete task
 
 ## Vendor Management
 
@@ -59,18 +59,18 @@ This project combines asset management, ticketing, vendor management, document h
 
 # Technology Stack
 
-| Technology            | Purpose                |
-| --------------------- | ---------------------- |
-| Python                | Backend programming    |
-| Flask                 | Web framework          |
-| SQLite                | Database               |
-| HTML/CSS/JavaScript   | Frontend               |
-| Flask-SQLAlchemy      | ORM                    |
-| Flask-Session         | Session management     |
-| psutil                | System monitoring      |
-| Git & GitHub          | Version control        |
-| Cloudflare Tunnel     | Secure remote access   |
-| Raspberry Pi Zero 2 W | Self-hosted deployment |
+| Technology            | Purpose                   |
+| --------------------- | ----------------------    |
+| Python                | Backend programming       |
+| Flask                 | Web framework             |
+| SQLite                | Database                  |
+| HTML/CSS/JavaScript   | Frontend                  |
+| Flask-SQLAlchemy      | ORM                       |
+| Flask-Session         | Session management        |
+| Python random module  | simulated monitoring data |
+| Git & GitHub          | Version control           |
+| Cloudflare Tunnel     | Secure remote access      |
+| Raspberry Pi Zero 2 W | Self-hosted deployment    |
 
 ---
 
